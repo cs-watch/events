@@ -115,3 +115,22 @@ func (r *RabbitBroker) Errors(ctx context.Context) <-chan error {
 	}
 	return r.errorsC
 }
+
+func (r *RabbitBroker) Send(ctx context.Context, topic string, payload []byte) error {
+	channel, err := r.conn.Channel()
+	if err != nil {
+		return errors.Join(err, brokers.ErrFailedToOpenChannel)
+	}
+
+	return channel.PublishWithContext(
+		ctx,
+		"",
+		topic,
+		false,
+		false,
+		amqp091.Publishing{
+			ContentType: "application/json",
+			Body:        payload,
+		},
+	)
+}

@@ -26,3 +26,7 @@ type Router interface {
 	Unsubscribe(ctx context.Context, topic string) error
 	Listen(ctx context.Context, msgs <-chan Message) error
 }
+
+type Sender interface {
+	Send(ctx context.Context, topic string, payload []byte) error
+}
